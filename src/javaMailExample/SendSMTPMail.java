@@ -8,20 +8,28 @@ import java.util.*;
 
 public class SendSMTPMail {
 
+	private String subject;
+	private String messageContent;
+	private String[] cc;
+	private String to; 
+
+
+
+
+
 	/**
 	 * @param args
 	 */
+	public SendSMTPMail(String subject, String messageContent,String to, String[] cc){
+		this.subject = subject;
+		this.messageContent = messageContent;
+		this.cc = cc;
+		this.to = to;
+	
 
 
-
-
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-
-		String username = "kylearallentaylor@gmail.com";
-		String password = "";
+		String username = "kylearat@gmail.com";
+		String password = "Kingdomhearts28";
 		String smtphost = "smtp.gmail.com";
 
 		// Step 1: Set all Properties
@@ -33,14 +41,14 @@ public class SendSMTPMail {
 		props.put("mail.smtp.port", "587");
 
 		// Input password
-		JPasswordField pwd = new JPasswordField(10);  
-		int action = JOptionPane.showConfirmDialog(null, pwd,"Enter Password",JOptionPane.OK_CANCEL_OPTION);  
-		if(action < 0) {
-			JOptionPane.showMessageDialog(null,"Cancel, X or escape key selected"); 
-			System.exit(0); 
-		}
-		else 
-			password = new String(pwd.getPassword());  
+//		JPasswordField pwd = new JPasswordField(10);  
+//		int action = JOptionPane.showConfirmDialog(null, pwd,"Enter Password",JOptionPane.OK_CANCEL_OPTION);  
+//		if(action < 0) {
+//			JOptionPane.showMessageDialog(null,"Cancel, X or escape key selected"); 
+//			System.exit(0); 
+//		}
+//		else 
+//			password = new String(pwd.getPassword());  
 
 		// Set Property with username and password for authentication  
 		props.setProperty("mail.user", username);
@@ -53,12 +61,14 @@ public class SendSMTPMail {
 
 			// Step 3: Create a message
 			MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("heshan@gmail.com"));
+			message.setFrom(new InternetAddress(username));
 			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse("heshan@gmail.com"));
-			message.setSubject("Testing");
-			message.setText("Dear SSC student,"
-					+ "\n\n Try this example, please!");
+					InternetAddress.parse(to));
+			for (int i = 0; i < cc.length; i++) {
+				message.addRecipients(Message.RecipientType.CC, InternetAddress.parse(cc[i]));
+			}
+			message.setSubject(subject);
+			message.setText(messageContent);
 
 			message.saveChanges();
 

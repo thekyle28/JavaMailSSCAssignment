@@ -31,7 +31,7 @@ public class IMAPClient {
 
 
 		String username = "kylearat@gmail.com";
-		String password = "";	        
+		String password = "Kingdomhearts28";	        
 
 		// Step 1.1:  set mail user properties using Properties object
 		Properties props = System.getProperties();
@@ -39,13 +39,13 @@ public class IMAPClient {
 		
 		// Get user password using JPasswordField 
 		JPasswordField pwd = new JPasswordField(10);  
-		int action = JOptionPane.showConfirmDialog(null, pwd,"Enter Password",JOptionPane.OK_CANCEL_OPTION);  
+		/*int action = JOptionPane.showConfirmDialog(null, pwd,"Enter Password",JOptionPane.OK_CANCEL_OPTION);  
 		if(action < 0) {
 			JOptionPane.showMessageDialog(null,"Cancel, X or escape key selected"); 
 			System.exit(0); 
 		}
 		else 
-			password = new String(pwd.getPassword());  
+			password = new String(pwd.getPassword());  */
 		
 		// Set Property with username and password for authentication  
 		props.setProperty("mail.user", username);
@@ -85,7 +85,27 @@ public class IMAPClient {
 				count++;
 				
 				// Get subject of each message 
-				subjects.add(message.getSubject() + "\n");
+				Flags mes_flag = message.getFlags();
+				String tags = new String();
+				if(mes_flag.contains(Flag.FLAGGED)){
+					tags += "FLAGGED ";
+				}
+				if(mes_flag.contains(Flag.SEEN)) {
+					tags += "READ ";
+				}
+				else if (!mes_flag.contains(Flag.SEEN)){
+					tags += "UNREAD ";
+				}
+				if(mes_flag.contains(Flag.RECENT)) {
+					tags += "RECENT ";
+				}
+				if(mes_flag.contains(Flag.ANSWERED)) {
+					tags += "ANSWERED ";
+				}
+			
+				subjects.add(tags + message.getSubject() + "\n");
+				
+
 				//System.out.println("The " + count + "th message is: " + message.getSubject());
 				//System.out.println(message.getContentType());
 				if(message.getContentType().contains("TEXT/PLAIN")) {
@@ -108,7 +128,8 @@ public class IMAPClient {
 							//System.out.println(bodyPart.getContent().toString());
 						}
 						else{
-							multipartContent += " ";
+							multipartContent += "";
+							System.out.println(bodyPart.getContentType().toString());
 						}
 
 					}
@@ -116,16 +137,12 @@ public class IMAPClient {
 					contents.add(multipartContent)
 ;				}
 
-				Flags mes_flag = message.getFlags();
+				
 				//System.out.println("Has this message been read?  " + mes_flag.contains(Flag.SEEN));
 			}	
 			//creates a new gui for the emails to be viewed in.
 			EmailGUI gui = new EmailGUI(subjects, contents);
-			JTextArea textArea = new JTextArea();
-			textArea.setText(subjects.toString());
-			textArea.setEditable(false);
-			gui.add(textArea);
-
+			
 			gui.setVisible(true);
 
 		} catch (NoSuchProviderException e) {
