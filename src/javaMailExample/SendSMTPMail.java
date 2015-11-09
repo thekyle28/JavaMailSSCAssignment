@@ -122,6 +122,7 @@ public class SendSMTPMail {
 				// message
 
 				System.out.println("Done");
+				
 			}
 
 		} catch (MessagingException e) {

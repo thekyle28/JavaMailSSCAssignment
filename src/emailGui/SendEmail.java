@@ -117,7 +117,7 @@ public class SendEmail extends JFrame {
 		
 		//create an arraylist to store all of the attachment file names
 		ArrayList<String> attachmentFileName = new ArrayList<String>();
-		System.out.println(attachmentFileName.toArray().toString());
+		//System.out.println(attachmentFileName.toArray().toString());
 		attachment = new JButton("Attachment");
 		attachment.addMouseListener(new MouseAdapter() {
 			@Override
@@ -130,8 +130,7 @@ public class SendEmail extends JFrame {
 			        if(returnVal == JFileChooser.APPROVE_OPTION) {
 			           attachmentFileName.add(chooser.getSelectedFile().getAbsolutePath());
 			           
-			        	System.out.println("You chose to open this file: " +
-			                chooser.getSelectedFile().getAbsolutePath());
+			        //System.out.println("You chose to open this file: " + chooser.getSelectedFile().getAbsolutePath());
 			        }
 			}
 		});
