@@ -47,7 +47,7 @@ public class EmailGUI extends JFrame {
 	private JPanel contentPane;
 
 	/**
-	 * Create the frame.
+	 * Create the Email GUI.
 	 */
 	public EmailGUI(ArrayList<String> subjects, ArrayList<Object> contents) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -88,38 +88,13 @@ public class EmailGUI extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				new SendEmail().setVisible(true);
-				System.out.println("hi");
 			}
 		});
 		panel.add(sendEmail);
 		
 		JButton unread = new JButton("Mark as unread");
 		panel.add(unread);
-		unread.addMouseListener(new MouseListener() {
-			
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				//TODO Auto-generate method stub
-			}
-			
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
+		unread.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				list.setSelectedIndex(list.getSelectedIndex());
