@@ -1,63 +1,58 @@
 package emailGui;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
+import javax.mail.Message;
+import javax.mail.search.SearchTerm;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.AbstractAction;
+import javax.swing.DefaultListModel;
 import javax.swing.JScrollPane;
-
-import java.awt.FlowLayout;
-
 import javax.swing.JButton;
 import javax.swing.BoxLayout;
-
-import java.awt.GridLayout;
-
-import javax.swing.Box;
 import javax.swing.JTextArea;
-import javax.swing.JSeparator;
 import javax.swing.JList;
 import javax.swing.AbstractListModel;
-import javax.swing.ListSelectionModel;
 import javax.swing.JLabel;
-
-import com.jgoodies.forms.factories.DefaultComponentFactory;
+import javax.swing.ListModel;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.SwingConstants;
-import javax.swing.border.LineBorder;
-
-import java.awt.Color;
-import javaMailExample.SendSMTPMail;
 
 import net.miginfocom.swing.MigLayout;
+
+import javax.swing.JTextField;
+
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
+import javaMailExample.IMAPClient;
 
 public class EmailGUI extends JFrame {
 
 	private JPanel contentPane;
+	private JTextField searchText;
+	private static JList<String> list;
 
 	/**
 	 * Create the Email GUI.
 	 */
+	@SuppressWarnings("unchecked")
 	public EmailGUI(ArrayList<String> subjects, ArrayList<Object> contents) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1265, 1001);
+		setBounds(100, 100, 1368, 1001);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		setContentPane(contentPane);
 		Object[] contentsArray = contents.toArray();
 		contentPane.setLayout(new MigLayout("", "[321px][700px][321px,grow]", "[1000px,grow]"));
-		JList<String> list = new JList<String>();
+		this.list = new JList<String>();
 		list.setModel(new AbstractListModel() {
 			//sets the values of the Jlist from the subjects arrayList in the main class. 
 			String[] values = subjects.toString().substring(1, (subjects.toString().length()) - 1).split("\n, ");
@@ -79,17 +74,25 @@ public class EmailGUI extends JFrame {
 		Preview.setEditable(false);
 		
 		JPanel panel = new JPanel();
-		contentPane.add(panel, "cell 2 0,grow");
+		contentPane.add(panel, "cell 2 0,growx,aligny top");
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
 		
-		JButton sendEmail = new JButton("Send Email");
+		JButton sendEmail = new JButton("New Email");
 		sendEmail.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				new SendEmail().setVisible(true);
 			}
 		});
+		
+		JPanel panel_2 = new JPanel();
+		panel.add(panel_2);
+		
+		JPanel panel_1 = new JPanel();
+		panel.add(panel_1);
+		
+
 		panel.add(sendEmail);
 		
 		JButton unread = new JButton("Mark as unread");
@@ -132,6 +135,48 @@ public class EmailGUI extends JFrame {
 			}
 		});
 		
+		searchText = new JTextField();
+		searchText.addActionListener(new AbstractAction() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				updateSubjects();
+			}
+		});
+		
+		searchText.setToolTipText("Search");
+		panel_1.add(searchText);
+		searchText.setHorizontalAlignment(SwingConstants.LEFT);
+		searchText.setColumns(20);
+		
+		JButton searchButton = new JButton("Search");
+		searchButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				updateSubjects();
+			}
+		});
+		panel_1.add(searchButton);
+		
+	}
+	
+	private void updateSubjects() {
+		String search = searchText.getText();
+		IMAPClient client = new IMAPClient(search);
 	}
 
+	public static void updateInbox(ArrayList<String> subjects, ArrayList<Object> contents){
+		list.setModel(new AbstractListModel() {
+			//sets the values of the Jlist from the subjects arrayList in the main class. 
+			String[] values = subjects.toString().substring(1, (subjects.toString().length()) - 1).split("\n, ");
+			public int getSize() {
+				return values.length;
+			}
+			public Object getElementAt(int index) {
+				return values[index];
+			}
+
+		});
+		
+	}
 }
