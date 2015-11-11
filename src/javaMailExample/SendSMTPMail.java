@@ -10,6 +10,10 @@ import javax.swing.JPasswordField;
 
 import java.util.*;
 
+/**
+ * @author Kyle
+ *
+ */
 public class SendSMTPMail {
 
 	private String subject;
@@ -18,8 +22,13 @@ public class SendSMTPMail {
 	private String to;
 	private Object[] attachments;
 
+
 	/**
-	 * @param args
+	 * @param subject The subject line for the message
+	 * @param messageContent The content of the message to be sent
+	 * @param to The address of the recipient of the email
+	 * @param cc The address of the other recipients who are cc'd
+	 * @param attachments The attachments to go with the email
 	 */
 	public SendSMTPMail(String subject, String messageContent, String to,
 			String[] cc, Object[] attachments) {
@@ -29,8 +38,6 @@ public class SendSMTPMail {
 		this.to = to;
 		this.attachments = attachments;
 
-		String username = "kylearat@gmail.com";
-		String password = "Kingdomhearts28";
 		String smtphost = "smtp.gmail.com";
 
 		// Step 1: Set all Properties
@@ -41,20 +48,11 @@ public class SendSMTPMail {
 		props.put("mail.smtp.host", smtphost);
 		props.put("mail.smtp.port", "587");
 
-		// Input password
-		// JPasswordField pwd = new JPasswordField(10);
-		// int action = JOptionPane.showConfirmDialog(null,
-		// pwd,"Enter Password",JOptionPane.OK_CANCEL_OPTION);
-		// if(action < 0) {
-		// JOptionPane.showMessageDialog(null,"Cancel, X or escape key selected");
-		// System.exit(0);
-		// }
-		// else
-		// password = new String(pwd.getPassword());
+
 
 		// Set Property with username and password for authentication
-		props.setProperty("mail.user", username);
-		props.setProperty("mail.password", password);
+		props.setProperty("mail.user", IMAPClient.username);
+		props.setProperty("mail.password", IMAPClient.password);
 
 		// Step 2: Establish a mail session (java.mail.Session)
 		Session session = Session.getDefaultInstance(props);
@@ -63,7 +61,7 @@ public class SendSMTPMail {
 
 			// Step 3: Create a message
 			MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(username));
+			message.setFrom(new InternetAddress(IMAPClient.username));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(to));
 			for (int i = 0; i < cc.length; i++) {
@@ -81,7 +79,7 @@ public class SendSMTPMail {
 				Transport tr = session.getTransport("smtp"); // Get Transport
 																// object from
 																// session
-				tr.connect(smtphost, username, password); // We need to connect
+				tr.connect(smtphost, IMAPClient.username, IMAPClient.password); // We need to connect
 				tr.sendMessage(message, message.getAllRecipients()); // Send
 																		// message
 
@@ -117,7 +115,7 @@ public class SendSMTPMail {
 				Transport tr = session.getTransport("smtp"); // Get Transport
 				// object from
 				// session
-				tr.connect(smtphost, username, password); // We need to connect
+				tr.connect(smtphost, IMAPClient.username, IMAPClient.password); // We need to connect
 				tr.sendMessage(message, message.getAllRecipients()); // Send
 				// message
 

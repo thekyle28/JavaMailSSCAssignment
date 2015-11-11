@@ -1,20 +1,17 @@
 package emailGui;
 
-import javax.mail.Message;
-import javax.mail.search.SearchTerm;
+import javax.mail.MessagingException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.AbstractAction;
-import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import javax.swing.BoxLayout;
 import javax.swing.JTextArea;
 import javax.swing.JList;
 import javax.swing.AbstractListModel;
-import javax.swing.JLabel;
-import javax.swing.ListModel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -29,16 +26,23 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JTextField;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-
 import javaMailExample.IMAPClient;
 
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import javax.swing.JLabel;
+
+/**
+ * @author Kyle
+ *
+ */
 public class EmailGUI extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField searchText;
 	private static JList<String> list;
+	private JTextField flagName;
+	private JTextField flagKeywords;
 
 	/**
 	 * Create the Email GUI.
@@ -96,14 +100,19 @@ public class EmailGUI extends JFrame {
 		panel.add(sendEmail);
 		
 		JButton unread = new JButton("Mark as unread");
-		panel.add(unread);
-		unread.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				list.setSelectedIndex(list.getSelectedIndex());
-				
+		unread.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					IMAPClient client = new IMAPClient("UNREAD", list.getSelectedValue(), list.getSelectedIndex());
+					
+				} catch (IOException | MessagingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
+		panel.add(unread);
+		
 			
 	/*		@Override
 			public void actionPerformed(ActionEvent e) {
@@ -121,15 +130,48 @@ public class EmailGUI extends JFrame {
 				//System.out.println("you clicked the button");
 			});*/
 		
-		JButton btnNewButton_2 = new JButton("New button");
-		panel.add(btnNewButton_2);
+		JButton newFlag = new JButton("Create a Flag");
+		
+		newFlag.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				try {
+					IMAPClient client = new IMAPClient(flagName.getText(), flagKeywords.getText(), list.getSelectedIndex());
+				} catch (MessagingException | IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		JPanel panel_4 = new JPanel();
+		panel.add(panel_4);
+		
+		JLabel lblNewLabel_1 = new JLabel("Flag Name");
+		panel_4.add(lblNewLabel_1);
+		
+		flagName = new JTextField();
+		panel_4.add(flagName);
+		flagName.setColumns(10);
+		
+		JPanel panel_3 = new JPanel();
+		panel.add(panel_3);
+		
+		JLabel lblNewLabel = new JLabel("Keywords");
+		panel_3.add(lblNewLabel);
+		
+		flagKeywords = new JTextField();
+		panel_3.add(flagKeywords);
+		flagKeywords.setColumns(10);
+		panel.add(newFlag);
 		
 		list.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent arg0) {
-
+				if(!list.isSelectionEmpty()){
 				String content = contentsArray[list.getSelectedIndex()].toString();
 				//System.out.println(content);
 				Preview.setText(contentsArray[list.getSelectedIndex()].toString());
+				}
 				
 				
 			}
@@ -160,11 +202,20 @@ public class EmailGUI extends JFrame {
 		
 	}
 	
+	
+	/**
+	 * This updates the JList so that it displays the content that the user has searched for.
+	 */
 	private void updateSubjects() {
 		String search = searchText.getText();
 		IMAPClient client = new IMAPClient(search);
 	}
 
+	/**
+	 * @param subjects The subjects to be used to update the inbox on the GUI
+	 * @param contents The content to be displayed when the subjects are clicked on
+	 * 		  in the JList
+	 */
 	public static void updateInbox(ArrayList<String> subjects, ArrayList<Object> contents){
 		list.setModel(new AbstractListModel() {
 			//sets the values of the Jlist from the subjects arrayList in the main class. 
@@ -172,7 +223,7 @@ public class EmailGUI extends JFrame {
 			public int getSize() {
 				return values.length;
 			}
-			public Object getElementAt(int index) {
+			public Object getElementAt(int index) { 
 				return values[index];
 			}
 
