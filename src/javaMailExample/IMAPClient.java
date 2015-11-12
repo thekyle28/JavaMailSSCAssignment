@@ -167,8 +167,9 @@ public class IMAPClient {
 	}
 
 	/**
-	 * 
-	 * @param subjects
+	 * Retrieves the message content and subject line of all the messages 
+	 * in a folder including the message flags
+	 * @param subjects The arrayList to store the subjects in, normally an empty 
 	 * @param contents
 	 * @param messages
 	 * @throws MessagingException
@@ -245,7 +246,8 @@ public class IMAPClient {
 	}
 
 	/**
-	 * 
+	 * Searches for messages that have the search text in the body or 
+	 * subject line of the email.
 	 * @param searchText
 	 * @throws MessagingException
 	 * @throws IOException
@@ -286,9 +288,9 @@ public class IMAPClient {
 
 	}
 
-	/**
-	 * @param searchText
-	 * @return
+	/** Creates the search term to be used in the folder search method.
+	 * @param searchText The text that the user 
+	 * @return returns the search term
 	 */
 	private static SearchTerm createSearchTerm(String searchText) {
 		SearchTerm search = new SearchTerm() {
@@ -302,11 +304,11 @@ public class IMAPClient {
 						// subject,
 						// or in the flags
 						try {
-							if (message.getContent().toString()
+							if (message.getContent().toString().toLowerCase()
 									.contains(searchText)
-									|| message.getSubject().toString()
+									|| message.getSubject().toString().toLowerCase()
 											.contains(searchText)
-									|| message.getFlags().contains(
+									|| message.getFlags().toString().toLowerCase().contains(
 											searchText)) {
 								return true;
 							}
@@ -321,9 +323,8 @@ public class IMAPClient {
 
 						multipartContent = extractMultipartMessage(multipartContent, message);
 
-						if (multipartContent.toString().contains(searchText)
-								|| message.getSubject().toString()
-										.contains(searchText)) {
+						if (multipartContent.toString().toLowerCase().contains(searchText)
+								|| message.getSubject().toString().toLowerCase().contains(searchText)) {
 							return true;
 						}
 
@@ -340,7 +341,8 @@ public class IMAPClient {
 	}
 
 	/**
-	 * @param tag
+	 * Updates the flags so that they are represented in the email GUI.
+	 * @param tag The name of the new flag to be created.
 	 * @throws IOException
 	 * @throws MessagingException
 	 */
@@ -425,9 +427,10 @@ public class IMAPClient {
 	}
 	
 	/**
-	 * @param tag
-	 * @param flagKeyword
-	 * @param messageIndex
+	 * This creates a custom flag.
+	 * @param tag The name of the new Flag you wish to create.
+	 * @param flagKeyword The keyword to search for in emails when setting the tags.
+	 * @param messageIndex The index of the message in the folder.
 	 * @throws MessagingException
 	 * @throws IOException
 	 */

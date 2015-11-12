@@ -24,6 +24,7 @@ public class SendSMTPMail {
 
 
 	/**
+	 * This class sends emails.
 	 * @param subject The subject line for the message
 	 * @param messageContent The content of the message to be sent
 	 * @param to The address of the recipient of the email
@@ -118,7 +119,7 @@ public class SendSMTPMail {
 				tr.connect(smtphost, IMAPClient.username, IMAPClient.password); // We need to connect
 				tr.sendMessage(message, message.getAllRecipients()); // Send
 				// message
-
+				// the message was successfully sent.
 				System.out.println("Done");
 				
 			}

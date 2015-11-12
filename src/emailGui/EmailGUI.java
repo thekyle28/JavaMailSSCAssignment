@@ -33,6 +33,7 @@ import java.io.IOException;
 import javax.swing.JLabel;
 
 /**
+ * This class creates the GUI that is used for the email client. 
  * @author Kyle
  *
  */
@@ -212,9 +213,10 @@ public class EmailGUI extends JFrame {
 	}
 
 	/**
+	 * Displays the given subjects and contents in the inbox.
 	 * @param subjects The subjects to be used to update the inbox on the GUI
 	 * @param contents The content to be displayed when the subjects are clicked on
-	 * 		  in the JList
+	 * 		  in the JList.
 	 */
 	public static void updateInbox(ArrayList<String> subjects, ArrayList<Object> contents){
 		list.setModel(new AbstractListModel() {
